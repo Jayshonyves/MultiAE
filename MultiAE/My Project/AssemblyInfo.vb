@@ -8,11 +8,11 @@ Imports System.Runtime.InteropServices
 
 '查看程序集特性的值
 
-<Assembly: AssemblyTitle("MultiAE")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("MultiAE")>
-<Assembly: AssemblyCopyright("Copyright ©  2018")>
+<Assembly: AssemblyTitle("MultiAERender")>
+<Assembly: AssemblyDescription("AE多开多线程渲染工具")>
+<Assembly: AssemblyCompany("Jasic |  jayshonyves.net")>
+<Assembly: AssemblyProduct("MultiAERender")>
+<Assembly: AssemblyCopyright("雪千渔 Copyright ©  2018")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
