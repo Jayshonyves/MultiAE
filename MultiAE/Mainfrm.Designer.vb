@@ -73,7 +73,7 @@ Partial Class Mainfrm
         Me.Label9 = New System.Windows.Forms.Label()
         Me.RendSetHelp = New System.Windows.Forms.LinkLabel()
         Me.ClearINI = New System.Windows.Forms.Button()
-        Me.TopWindowBtn = New System.Windows.Forms.Button()
+        Me.TopWindowCheck = New System.Windows.Forms.CheckBox()
         Me.LB.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -639,24 +639,23 @@ Partial Class Mainfrm
         Me.ClearINI.Text = "恢复设置"
         Me.ClearINI.UseVisualStyleBackColor = False
         '
-        'TopWindowBtn
+        'TopWindowCheck
         '
-        Me.TopWindowBtn.BackColor = System.Drawing.Color.FromArgb(CType(CType(18, Byte), Integer), CType(CType(18, Byte), Integer), CType(CType(18, Byte), Integer))
-        Me.TopWindowBtn.FlatAppearance.BorderSize = 0
-        Me.TopWindowBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.TopWindowBtn.Location = New System.Drawing.Point(352, 515)
-        Me.TopWindowBtn.Name = "TopWindowBtn"
-        Me.TopWindowBtn.Size = New System.Drawing.Size(108, 29)
-        Me.TopWindowBtn.TabIndex = 54
-        Me.TopWindowBtn.Text = "置顶窗口"
-        Me.TopWindowBtn.UseVisualStyleBackColor = False
+        Me.TopWindowCheck.AutoSize = True
+        Me.TopWindowCheck.ForeColor = System.Drawing.Color.Silver
+        Me.TopWindowCheck.Location = New System.Drawing.Point(35, 453)
+        Me.TopWindowCheck.Name = "TopWindowCheck"
+        Me.TopWindowCheck.Size = New System.Drawing.Size(75, 21)
+        Me.TopWindowCheck.TabIndex = 55
+        Me.TopWindowCheck.Text = "窗口置顶"
+        Me.TopWindowCheck.UseVisualStyleBackColor = True
         '
         'Mainfrm
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(26, Byte), Integer), CType(CType(26, Byte), Integer), CType(CType(26, Byte), Integer))
         Me.ClientSize = New System.Drawing.Size(610, 594)
-        Me.Controls.Add(Me.TopWindowBtn)
+        Me.Controls.Add(Me.TopWindowCheck)
         Me.Controls.Add(Me.ClearINI)
         Me.Controls.Add(Me.RendSetHelp)
         Me.Controls.Add(Me.OutputModuleC)
@@ -769,5 +768,5 @@ Partial Class Mainfrm
     Friend WithEvents Label9 As Label
     Friend WithEvents RendSetHelp As LinkLabel
     Friend WithEvents ClearINI As Button
-    Friend WithEvents TopWindowBtn As Button
+    Friend WithEvents TopWindowCheck As CheckBox
 End Class

@@ -81,13 +81,13 @@
     <Compile Include="AboutFrm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Configure.vb" />
     <Compile Include="debugfrm.Designer.vb">
       <DependentUpon>debugfrm.vb</DependentUpon>
     </Compile>
     <Compile Include="debugfrm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="JyStatistic.vb" />
     <Compile Include="Mainfrm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -110,12 +110,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="RenderLogFrm.Designer.vb">
-      <DependentUpon>RenderLogFrm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="RenderLogFrm.vb">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Resource1.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -144,9 +138,6 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RenderLogFrm.resx">
-      <DependentUpon>RenderLogFrm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource1.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>

@@ -33,6 +33,9 @@ Public Class Mainfrm
             Dim rtn(insAE.Length - 1) As String
             For i As Integer = 0 To insAE.Length - 1
                 rtn(i) = subkey.OpenSubKey(insAE(i)).GetValue("InstallPath")
+                If Not rtn(i).EndsWith("\") Then
+                    rtn(i) += "\"
+                End If
             Next i
             Return rtn
         End If
@@ -49,30 +52,31 @@ Public Class Mainfrm
     End Sub
 
     Private Sub Mainfrm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim existConfig As Boolean = Module1.Init()
+        If existConfig Then
+            AEPath.Text = Config.AePath
+            With RenderSettingC
+                .Text = Config.CurRenderSetting
+                .Items.Clear()
+                .Items.AddRange(Config.RenderSetting.ToArray)
+            End With
+            With OutputModuleC
+                .Text = Config.CurOutputModule
+                .Items.Clear()
+                .Items.AddRange(Config.OutputModule.ToArray)
+            End With
+            ThreadNum.Text = Config.ThreadCount
+            TopWindowCheck.Checked = Config.WindowTop
+            Me.TopMost = Config.WindowTop
+            RenderDoneShutDown.Checked = Config.CompleteShutdown
+            ShowRenderCK.Checked = Config.DisplayConsole
+            OnlyShowOneCK.Checked = Config.OnlyConsole
+            RenderDoneCk.Checked = Config.CompleteNotify
+        End If
+
         VerShowL.Text += Ver
         WatchFolder.Text = Command()
 
-        '读取配置文件
-        Dim iniPath As String = Application.StartupPath + "\multiae.ini"
-        If File.Exists(iniPath) Then
-            Dim RenderSettingIniCount As Integer = GetIntFromINI("RenderSetting", "count", 0, iniPath)
-            If RenderSettingIniCount <> 0 Then
-                RenderSettingC.Items.Clear()
-                For i As Integer = 1 To RenderSettingIniCount
-                    RenderSettingC.Items.Add(GetStrFromINI("RenderSetting", "opt" + i.ToString, "", iniPath))
-                Next
-                RenderSettingC.Text = GetStrFromINI("RenderSetting", "last", "", iniPath)
-            End If
-            Dim OutputModuleIniCount As Integer = GetIntFromINI("OutputModule", "count", 0, iniPath)
-            If OutputModuleIniCount <> 0 Then
-                OutputModuleC.Items.Clear()
-                For i As Integer = 1 To OutputModuleIniCount
-                    OutputModuleC.Items.Add(GetStrFromINI("OutputModule", "opt" + i.ToString, "", iniPath))
-                Next
-                OutputModuleC.Text = GetStrFromINI("OutputModule", "last", "", iniPath)
-            End If
-
-        End If
         Dim tip As New ToolTip With {
             .AutoPopDelay = 30000,
             .InitialDelay = 10,
@@ -102,10 +106,6 @@ Public Class Mainfrm
 
 
         Me.Text = "AE多开多线程渲染工具 - MultiAERenderV" & Ver
-        Dim jy As New JyStatistic
-        jy = New JyStatistic
-        AddHandler jy.PostDone, AddressOf postdone
-        jy.Post("http://www.imxqy.com/tongji/postStatistic.php", "name=multiae")
         debugfrm.debugOut("Ver - " & Ver & " " & verDate)
         debugfrm.debugOut("Initialize..")
         Call SchAEBtn_Click(sender, e)
@@ -248,7 +248,7 @@ Public Class Mainfrm
         If RenderM = RenderMode.RenderWF Then
             WatchFrm.Show()
         ElseIf RenderM = RenderMode.RenderAEP Then
-            RenderLogFrm.Show()
+            'RenderLogFrm.Show()
         End If
     End Sub
 
@@ -460,38 +460,39 @@ Public Class Mainfrm
     End Sub
 
     Private Sub Mainfrm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-
-        If Not cleari Then
-            Dim multiini As String = Application.StartupPath + "\multiae.ini"
-
-            WriteStrINI("RenderSetting", "last", RenderSettingC.Text, multiini)
-            WriteStrINI("OutputModule", "last", OutputModuleC.Text, multiini)
-
-            If RenderSettingC.Items.IndexOf(RenderSettingC.Text) < 1 Then
-                RenderSettingC.Items.Add(RenderSettingC.Text)
-            End If
-            If OutputModuleC.Items.IndexOf(OutputModuleC.Text) < 1 Then
-                OutputModuleC.Items.Add(OutputModuleC.Text)
-            End If
-
-            WriteStrINI("RenderSetting", "count", RenderSettingC.Items.Count, multiini)
-            WriteStrINI("OutputModule", "count", OutputModuleC.Items.Count, multiini)
-
-            For iii As Integer = 1 To OutputModuleC.Items.Count
-                WriteStrINI("OutputModule", "opt" + iii.ToString, OutputModuleC.Items(iii - 1).ToString, multiini)
-            Next iii
-            For iii As Integer = 1 To RenderSettingC.Items.Count
-                WriteStrINI("RenderSetting", "opt" + iii.ToString, RenderSettingC.Items(iii - 1).ToString, multiini)
-            Next iii
+        '保存配置文件
+        Dim _config As New Configure
+        _config.AePath = AEPath.Text
+        _config.CurRenderSetting = RenderSettingC.Text
+        For Each item In RenderSettingC.Items
+            _config.RenderSetting.Add(item.ToString())
+        Next
+        If Not _config.RenderSetting.Contains(_config.CurRenderSetting) Then
+            _config.RenderSetting.Add(_config.CurRenderSetting)
         End If
+        _config.CurOutputModule = OutputModuleC.Text
+        For Each item In OutputModuleC.Items
+            _config.OutputModule.Add(item.ToString())
+        Next
+        If Not _config.OutputModule.Contains(_config.CurOutputModule) Then
+            _config.OutputModule.Add(_config.CurOutputModule)
+        End If
+        _config.ThreadCount = ThreadNum.Text
+        _config.WindowTop = TopWindowCheck.Checked
+        _config.WindowTop = Me.TopMost
+        _config.CompleteShutdown = RenderDoneShutDown.Checked
+        _config.DisplayConsole = ShowRenderCK.Checked
+        _config.OnlyConsole = OnlyShowOneCK.Checked
+        _config.CompleteNotify = RenderDoneCk.Checked
+        Config = _config
+        Module1.Term()
     End Sub
-    Dim cleari As Boolean = False
+
     Private Sub ClearINI_Click(sender As Object, e As EventArgs) Handles ClearINI.Click
         Try
-            If File.Exists(Application.StartupPath + "\multiae.ini") Then
-                File.Delete(Application.StartupPath + "\multiae.ini")
+            If File.Exists(Application.StartupPath + "\" + CONFIG_FILENAME) Then
+                File.Delete(Application.StartupPath + "\" + CONFIG_FILENAME)
             End If
-            cleari = True
             MsgBox("成功，请重启程序")
         Catch ex As Exception
             MsgBox("文件被占用")
@@ -506,12 +507,7 @@ Public Class Mainfrm
         End If
     End Sub
 
-    Private Sub TopWindowBtn_Click(sender As Object, e As EventArgs) Handles TopWindowBtn.Click
-        TopMost = Not TopMost
-        If TopMost Then
-            TopWindowBtn.Text = "取消置顶"
-        Else
-            TopWindowBtn.Text = "置顶窗口"
-        End If
+    Private Sub TopWindowCheck_Click(sender As Object, e As EventArgs) Handles TopWindowCheck.Click
+        Me.TopMost = TopWindowCheck.Checked
     End Sub
 End Class
